@@ -1,0 +1,72 @@
+.rotate_90{
+	transform:rotate(90deg);
+	-ms-transform:rotate(90deg); /* IE 9 */
+	-webkit-transform:rotate(90deg); /* Opera, Chrome, and Safari */
+}
+
+.rotate_180{
+	transform:rotate(180deg);
+	-ms-transform:rotate(180deg); /* IE 9 */
+	-webkit-transform:rotate(180deg); /* Opera, Chrome, and Safari */
+}
+
+.rotate_270{
+	transform:rotate(270deg);
+	-ms-transform:rotate(270deg); /* IE 9 */
+	-webkit-transform:rotate(270deg); /* Opera, Chrome, and Safari */
+}
+
+.control_icon{
+	width: 80px;
+	height: 80px;
+	cursor: pointer; cursor: hand;
+}
+
+.grid3x3 {
+    display:table;
+    height:100%;
+    /*width:100%;*/
+}
+.grid3x3 > div {
+    display:table-row;
+    /*width:270px;*/
+}
+.grid3x3 > div:nth-child(2) {
+    height: 100px;
+}
+.grid3x3 > div > div {
+    display:table-cell;
+}
+.grid3x3 > div > div:nth-child(2) {
+    width:100px;
+}
+
+.left_arrow{
+	/*float:right;*/
+}
+
+.game_holder{
+	display: table;
+	width:100%;
+	max-width: 900px;
+}
+
+.game_holder > div{
+	display: table-row;
+}
+
+.game_holder > div >div{
+	display:table-cell;
+	vertical-align: top;
+}
+
+div {
+    outline: 1px solid orange;
+}
+
+@media (max-width: 900px) {
+	.game_holder > div > div{
+		display:table-row;
+		vertical-align: middle;
+	}
+}

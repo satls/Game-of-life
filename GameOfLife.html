@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>object test</title>
+		<link rel="stylesheet" type="text/css" href="GameOfLife.css">
+		<!--<script type="text/javascript" src="jquery-2.0.0.js"></script>-->
+		<script type="text/javascript" src="GameOfLife.js"></script>
+		<script type="text/javascript" src="setup.js"></script>
+		
+	</head>
+	<body>
+		<div class="game_holder">
+			<div>
+				<div>
+					<canvas id="lifeCanvas" width="600" height="600" style="border-style:solid; border-width:medium;"></canvas>
+				</div>
+				<div>
+					<div class="grid3x3">
+					    <div>
+					        <div></div>
+					        <div><img onclick="game.scrollUp()" class="rotate_270 control_icon up_arrow" src="arrow.png"/></div>
+					        <div></div>
+					    </div>
+					    <div>
+					        <div><img onclick="game.scrollLeft()" class="rotate_180 control_icon left_arrow" src="arrow.png"/></div>
+					        <div></div>
+					        <div><img onclick="game.scrollRight()" class="control_icon right_arrow" src="arrow.png"/></div>
+					    </div>
+					    <div>
+					        <div></div>
+					        <div><img onclick="game.scrollDown()" class="rotate_90 control_icon down_arrow" src="arrow.png"/></div>
+					        <div></div>
+					    </div>
+					</div>
+
+					<div class="grid3x3">
+						<div>
+							<div><img onclick="game.zoomIn()" class="control_icon" src="plus.png"/></div>
+							<div><img onclick="game.zoomOut()" class="control_icon" src="minus.png"/></div>
+							<div><button onclick="game.resetCamera()">reset</button><input type="checkbox" onclick="game.toggleFullRedraw()">do full redraw</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div id='log'></div>
+	</body>
+	<script type="text/javascript">
+		var canvas = document.getElementById("lifeCanvas");;
+		var game = new GameOfLife(canvas);
+
+		//$(document).ready(function(){
+		document.addEventListener('DOMContentLoaded',function(){
+			//setUpMachine(game);
+						
+			//test code
+			// game.setCellAlive(2+20,1+20);
+			// game.setCellAlive(2+20,2+20);
+			// game.setCellAlive(2+20,3+20);
+
+			// game.setCellAlive(3+20,1+20);
+			// game.setCellAlive(4+20,1+20);
+			// game.setCellAlive(3+20,2+20);
+			// game.setCellAlive(3+20,3+20);
+			// game.setCellAlive(2+20,2+20);
+
+			game.setCellAlive(15+20,15+20);
+			game.setCellAlive(16+20,15+20);
+			game.setCellAlive(15+20,16+20);
+			game.setCellAlive(15+20,17+20);
+			game.setCellAlive(14+20,16+20);
+			
+			// for(var i1=0; i1< 8; i1++){
+			// 	for(var i2=0; i2< 8; i2++){
+			// 		if(i1%2!=0 && i2%3!=0){
+			// 			game.setCellAlive(55+i1*100,55+i2*100);
+			// 			game.setCellAlive(56+i1*100,55+i2*100);
+			// 			game.setCellAlive(55+i1*100,56+i2*100);
+			// 			game.setCellAlive(55+i1*100,57+i2*100);
+			// 			game.setCellAlive(54+i1*100,56+i2*100);
+			// 		}
+			// 	}
+			// }
+
+			// for(var i =0; i< 10; i++){
+			// 	for(var j = 0; j<10; j++){
+			// 		if(i != j && i%2!=0)
+			// 		{
+			// 			game.setCellAlive(3+i*30,1+j*30);
+			// 			game.setCellAlive(4+i*30,1+j*30);
+			// 			game.setCellAlive(3+i*30,2+j*30);
+			// 			game.setCellAlive(3+i*30,3+j*30);
+			// 			game.setCellAlive(2+i*30,2+j*30);
+			// 		}
+			// 	}
+			// }
+
+			window.setInterval(function(){
+				game.evolve();
+			},200);
+
+		});
+	</script>
+</html>

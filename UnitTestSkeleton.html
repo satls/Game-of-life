@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Game Of Life Unit Tests</title>
+		<link rel="stylesheet" href="qunit-1.11.0.css">
+		<script src="qunit-1.11.0.js"></script>
+		<script src="GameOfLife.js"></script>
+		<script type="text/javascript" src="jquery-2.0.0.js"></script>
+		<script type="text/javascript">
+		function MockGame(){
+
+			var cells = {};
+			var cellStates = {};
+			var cellBroadcastBirth = {};
+			var cellBroadcastDeath = {};
+			var me = this;
+			this.setCellAlive = function(_x, _y){
+				var newCell = this.getCell(_x,_y);
+				newCell.setAlive();
+			}
+
+			this.evolve = function(){
+				//call evolve on cell
+				for(var i in cells){
+					cells[i].evolve();
+				}
+				//update cells
+				for(var i in cells){
+					cells[i].update();
+				}
+			}
+
+			this.drawCell = function(_x, _y, _alive){
+				cellStates[_x+""+_y] = _alive;
+			}
+
+			this.broadcastDeath = function(_x, _y){
+				cellBroadcastDeath[_x+""+_y]=true;
+			}
+
+			this.broadcastBirth = function(_x, _y){
+				cellBroadcastBirth[_x+""+_y]=true;
+
+			}
+
+			this.isCellAlive = function(_x, _y){
+				return cellStates[_x+""+_y];
+			}
+
+			this.hasBroadcastBirth = function(_x, _y){
+				if(cellBroadcastBirth[_x+""+_y]==null)
+					return false;
+				else
+					return cellBroadcastBirth[_x+""+_y];
+			}
+			this.hasBroadcastDeath = function(_x, _y){
+				if(cellBroadcastDeath[_x+""+_y]==null)
+					return false;
+				else
+					return cellBroadcastDeath[_x+""+_y];
+			}
+
+			this.clearBroadcastDeaths = function(){
+				cellBroadcastDeath = {};
+			}
+
+			this.clearBroadcastBirths = function(){
+				cellBroadcastBirth = {};
+			}
+
+			this.getCell = function(_x, _y){
+				if(cells[_x+""+_y]==null)
+					cells[_x+""+_y]=new Cell(_x,_y,me);
+				return cells[_x+""+_y];
+			}
+		}
+
+
+		</script>
+		<script>
+			// test("Unit Test", function(){
+			// 	equal("yes","yes","description of test");
+			// 	equal("yes","no","description of test");
+			// 	equal(true,true,"description of test");
+			// 	equal(true,false,"description of test");
+			// 	ok(true);
+			// 	ok(false);
+			// });
+			
+			//set of tests for cells calling the board with their states after they live and die.
+			test("A new live cell should evolve to alive and call draw with alive = true on the game", function(){
+				var mockGame = new MockGame();
+				mockGame.setCellAlive(0,0);
+				mockGame.evolve();
+				equal(mockGame.isCellAlive(0,0),true,"the test cell should be set alive");
+			});
+
+			test("A new live cell should evolve to alive and call draw with alive = true on the game, it should then evolve to dead and call draw with alive = false on the game as it has no alive neighbours", function(){
+				var mockGame = new MockGame();
+				var testCell = new Cell(0,0,mockGame);
+				testCell.setAlive();
+				testCell.evolve();
+				testCell.update();
+				equal(mockGame.isCellAlive(0,0),true,"the new alive test cell should be alive");
+				testCell.evolve();
+				testCell.update();
+				equal(mockGame.isCellAlive(0,0),false,"the alive test cell should die");
+
+				//mockGame.setCellAlive(0,0);
+				//mockGame.evolve();
+				//mockGame.evolve();
+				//equal(mockGame.isCellAlive(0,0),false,"the test cell should be set dead");
+			});
+			test("a new alive cell should call the board to broadcast its birth to its neighbours", function(){
+				var mockGame = new MockGame();
+				mockGame.setCellAlive(0,0);
+				mockGame.evolve();
+				equal(mockGame.isCellAlive(0,0),true,"the test cell should be set alive");
+				equal(mockGame.hasBroadcastBirth(0,0),true,"the test cell should call broadcastBirth(0,0)");
+			});
+			test("a cell that dies should call broadcastDeath on the board", function(){
+				var mockGame = new MockGame();
+				mockGame.setCellAlive(0,0);
+				mockGame.evolve();
+				mockGame.evolve();
+				equal(mockGame.isCellAlive(0,0),false,"the test cell should be set dead");
+				equal(mockGame.hasBroadcastDeath(0,0),true,"the test cell should call broadcastDeath(0,0)");
+			});
+
+			test("a cell that is alive but has 2 alive neighbours should evolve alive", function(){
+				var mockGame = new MockGame();
+				mockGame.setCellAlive(0,0);
+				var testCell = mockGame.getCell(0,0);
+				//initialise the cell to alive by evolving it
+				mockGame.evolve();
+				equal(mockGame.isCellAlive(0,0),true,"the test cell should be set alive");
+				equal(mockGame.hasBroadcastBirth(0,0),true,"the test cell should call broadcastBirth(0,0)");
+				//simulate 3 of this cells neighbours coming alive
+				testCell.neighbourBorn();
+				testCell.neighbourBorn();
+				//evolve the cell, it should now come alive
+				mockGame.evolve();
+				equal(mockGame.isCellAlive(0,0),true,"the test cell should be evolve alive");
+			});
+
+			test("a dead cell that is dead but has 2 alive neighbours should evolve dead", function(){
+				var mockGame = new MockGame();
+				mockGame.setCellAlive(0,0);
+				var testCell = mockGame.getCell(0,0);
+				//initialise the cell to dead by evolving it twice
+				mockGame.evolve();
+				mockGame.evolve();
+				equal(mockGame.isCellAlive(0,0),false,"the test cell should be set dead");
+				equal(mockGame.hasBroadcastDeath(0,0),true,"the test cell should call broadcastDeath(0,0)");
+				//simulate 3 of this cells neighbours coming alive
+				testCell.neighbourBorn();
+				testCell.neighbourBorn();
+				//evolve the cell, it should now come alive
+				mockGame.evolve();
+				equal(mockGame.isCellAlive(0,0),false,"the test cell should stay dead");
+			});
+
+			test("a cell that is dead but has 3 alive neighbours should come alive", function(){
+				var mockGame = new MockGame();
+				mockGame.setCellAlive(0,0);
+				var testCell = mockGame.getCell(0,0);
+				//initialise the cell and let it die by evolving twice
+				mockGame.evolve();
+				mockGame.evolve();
+				equal(mockGame.hasBroadcastDeath(0,0),true,"the test cell should call hasBroadcastDeath(0,0)");
+				equal(mockGame.isCellAlive(0,0),false,"the test cell should be set dead");
+				//simulate 3 of this cells neighbours coming alive
+				testCell.neighbourBorn();
+				testCell.neighbourBorn();
+				testCell.neighbourBorn();
+				//evolve the cell, it should now come alive
+				mockGame.evolve();
+				equal(mockGame.isCellAlive(0,0),true,"the test cell should be evolve alive");
+				equal(mockGame.hasBroadcastBirth(0,0),true,"the test cell should call broadcastBirth(0,0)");
+
+			});
+
+			test("a cell that is alive but has 4 alive neighbours should die", function(){
+				var mockGame = new MockGame();
+				mockGame.setCellAlive(0,0);
+				var testCell = mockGame.getCell(0,0);
+				//initialise the cell
+				mockGame.evolve();
+				equal(mockGame.hasBroadcastBirth(0,0),true,"the test cell should call broadcastBirth(0,0)");
+				equal(mockGame.hasBroadcastDeath(0,0),false,"the test cell should not call broadcastDeath(0,0)");
+				equal(mockGame.isCellAlive(0,0),true,"the test cell should be alive");
+				//simulate 3 of this cells neighbours coming alive
+				testCell.neighbourBorn();
+				testCell.neighbourBorn();
+				testCell.neighbourBorn();
+				testCell.neighbourBorn();
+				mockGame.clearBroadcastBirths();
+				mockGame.clearBroadcastDeaths();
+				//evolve the cell, it should now come alive
+				mockGame.evolve();
+				equal(mockGame.isCellAlive(0,0),false,"the test cell should evolve dead");
+				equal(mockGame.hasBroadcastBirth(0,0),false,"the test cell should not call broadcastBirth(0,0)");
+				equal(mockGame.hasBroadcastDeath(0,0),true,"the test cell should call broadcastDeath(0,0)");
+			});
+		</script>
+	</head>
+	<body>
+		<div id="qunit"></div>
+		<div id="qunit-fixture"></div>
+	</body>
+</html>
