@@ -61,7 +61,7 @@
 }
 
 div {
-    outline: 1px solid orange;
+    /*outline: 1px solid orange;*/
 }
 
 @media (max-width: 900px) {

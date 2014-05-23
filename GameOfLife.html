@@ -39,18 +39,41 @@
 							<div><img onclick="game.zoomIn()" class="control_icon" src="plus.png"/></div>
 							<div><img onclick="game.zoomOut()" class="control_icon" src="minus.png"/></div>
 							<div><button onclick="game.resetCamera()">reset</button><input type="checkbox" onclick="game.toggleFullRedraw()">do full redraw</div>
+
+							<div>
+								<button onclick="startTimer()">start game</button>
+								<button onclick="pauseTimer()">pause game</button>
+							</div>
+
 						</div>
 					</div>
-
 				</div>
 			</div>
+		</div>
+		<div id="sourceLink">
+			<a href="https://github.com/satls/Game-of-life">source on github!</a>
 		</div>
 		<div id='log'></div>
 	</body>
 	<script type="text/javascript">
 		var canvas = document.getElementById("lifeCanvas");;
 		var game = new GameOfLife(canvas);
+		var gameTimer;
+		var started = false;
 
+		function evolveGame(){
+			game.evolve();
+		}
+
+		function startTimer(){
+			if(!started)
+				gameTimer = window.setInterval(evolveGame,200);
+			started=true;
+		}
+		function pauseTimer(){
+			window.clearInterval(gameTimer);
+			started=false;
+		}
 		//$(document).ready(function(){
 		document.addEventListener('DOMContentLoaded',function(){
 			//setUpMachine(game);
@@ -97,9 +120,7 @@
 			// 	}
 			// }
 
-			window.setInterval(function(){
-				game.evolve();
-			},200);
+			startTimer();
 
 		});
 	</script>
