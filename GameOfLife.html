@@ -41,8 +41,8 @@
 							<div><button onclick="game.resetCamera()">reset</button><input type="checkbox" onclick="game.toggleFullRedraw()">do full redraw</div>
 
 							<div>
-								<button onclick="startTimer()">start game</button>
-								<button onclick="pauseTimer()">pause game</button>
+								<button onclick="game.startTimer()">start game</button>
+								<button onclick="game.pauseTimer()">pause game</button>
 							</div>
 
 						</div>
@@ -51,29 +51,16 @@
 			</div>
 		</div>
 		<div id="sourceLink">
-			<a href="https://github.com/satls/Game-of-life">source on github!</a>
+			<a href="https://github.com/satls/Game-of-life">Source on Github!</a>
+			<br>
+			<a href="UnitTestSkeleton.html">Unit Tests</a>
 		</div>
 		<div id='log'></div>
 	</body>
 	<script type="text/javascript">
 		var canvas = document.getElementById("lifeCanvas");;
 		var game = new GameOfLife(canvas);
-		var gameTimer;
-		var started = false;
-
-		function evolveGame(){
-			game.evolve();
-		}
-
-		function startTimer(){
-			if(!started)
-				gameTimer = window.setInterval(evolveGame,200);
-			started=true;
-		}
-		function pauseTimer(){
-			window.clearInterval(gameTimer);
-			started=false;
-		}
+		
 		//$(document).ready(function(){
 		document.addEventListener('DOMContentLoaded',function(){
 			//setUpMachine(game);
@@ -120,7 +107,7 @@
 			// 	}
 			// }
 
-			startTimer();
+			game.startTimer();
 
 		});
 	</script>

@@ -1,3 +1,5 @@
+
+
 function Cell(_x, _y, _board){
 	var x = _x;
 	var y = _y;
@@ -77,6 +79,19 @@ function GameOfLife(_canvas){
 	var _SCROLL_VAL = 60;
 	var cellsRedraw = true;
 
+	var gameTimer;
+	var started = false;
+
+	this.startTimer =function(){
+		if(!started)
+			gameTimer = window.setInterval(this.evolve,200);
+		started=true;
+	}
+	this.pauseTimer = function(){
+		window.clearInterval(gameTimer);
+		started=false;
+	}
+
 	this.evolve = function(){
 		//evolve cells
 		for(var i in cells){
@@ -89,7 +104,7 @@ function GameOfLife(_canvas){
 			if(cells[i].safeToDelete())
 				delete cells[i];
 			if(!cellsRedraw)
-				this.drawAllCells();
+				me.drawAllCells();
 		}
 	}
 
